@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->enum('title', [
+                'Строительство', 'Бытовой ремонт', 'Уборка', 'Перевозки', 'Ремонт', 'Установка техники'
+            ]);
+            $table->string('description');
+            $table->string('img')->nullable();
             $table->timestamps();
         });
     }

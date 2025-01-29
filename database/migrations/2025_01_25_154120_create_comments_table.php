@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->text('content')->nullable();
+            $table->integer('stars')->check('stars >= 1 AND stars <= 5');
+            $table->foreignId('application_id')->constrained('applications')->onDelete('cascade');
             $table->timestamps();
         });
     }

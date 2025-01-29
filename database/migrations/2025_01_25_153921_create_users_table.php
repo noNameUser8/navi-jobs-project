@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('last_name');
+            $table->string('phone');
+            $table->string('email')->unique();
+            $table->enum('role', ['admin', 'office_manager', 'worker', 'client']);
+            $table->unsignedBigInteger('organization_id')->nullable();
+            $table->foreign('organization_id')->references('id')->on('organizations')->onDelete('set null');
             $table->timestamps();
         });
     }
