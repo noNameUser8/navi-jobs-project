@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->foreignId('administrator_id')->constrained('users')->onDelete('cascade');
             $table->string('city');
             $table->string('address');
             $table->timestamps();
