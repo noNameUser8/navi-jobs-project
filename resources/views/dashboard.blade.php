@@ -9,6 +9,11 @@
 <body class="bg-gray-100 flex justify-center items-center h-screen">
     <div class="bg-white p-6 rounded shadow-md w-96 text-center">
         <h2 class="text-2xl font-bold mb-4">Welcome, {{ auth()->user()->name }}!</h2>
+        
+        @if(auth()->user()->role === 'admin')
+            <a href="{{ route('users.create') }}" class="bg-blue-500 text-white w-full p-2 rounded block mb-4">Add New User</a>
+        @endif
+        
         <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit" class="bg-red-500 text-white w-full p-2 rounded">Logout</button>
