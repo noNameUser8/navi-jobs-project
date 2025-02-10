@@ -30,7 +30,9 @@
             <a href="{{ route('organizations.create') }}" class="bg-green-500 text-white w-full p-2 rounded block mb-4 text-center">Create Organization</a>
         @endif
 
-        
+        @if(auth()->user()->role === 'admin' || auth()->user()->role === 'office_manager')
+            <a href="{{ route('organizations.index') }}" class="bg-purple-500 text-white w-full p-2 rounded block mb-4 text-center">View Organizations</a>
+        @endif
 
         <form action="{{ route('logout') }}" method="POST">
             @csrf
@@ -38,5 +40,4 @@
         </form>
     </div>
 </body>
-
 </html>

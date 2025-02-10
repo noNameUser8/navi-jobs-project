@@ -21,6 +21,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/organizations/create', [OrganizationController::class, 'create'])->name('organizations.create');
     Route::post('/organizations/store', [OrganizationController::class, 'store'])->name('organizations.store');
+    Route::get('/organizations', [OrganizationController::class, 'index'])->name('organizations.index');
+    Route::get('/organizations/{organization}/edit', [OrganizationController::class, 'edit'])->name('organizations.edit');
+    Route::put('/organizations/{organization}', [OrganizationController::class, 'update'])->name('organizations.update');
+    Route::delete('/organizations/{organization}', [OrganizationController::class, 'destroy'])->name('organizations.destroy');
 
 
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
