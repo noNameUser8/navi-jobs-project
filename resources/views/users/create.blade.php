@@ -53,11 +53,6 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-sm font-medium">Organization</label>
-                <input type="text" name="organization_id" class="w-full border p-2 rounded">
-            </div>
-
-            <div class="mb-4">
                 <label class="block text-sm font-medium">Password</label>
                 <input type="password" name="password" class="w-full border p-2 rounded" required>
             </div>

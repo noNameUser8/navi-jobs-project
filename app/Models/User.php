@@ -25,4 +25,9 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class, 'organization_id');
+    }
 }

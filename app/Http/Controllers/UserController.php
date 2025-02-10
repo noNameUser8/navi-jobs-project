@@ -20,35 +20,56 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'office_manager'])) {
-            return redirect()->route('dashboard')->with('error', 'Access denied.');
+        $authUser = Auth::user();
+    
+        if ($authUser->role === 'office_manager' && !$authUser->organization_id) {
+            return redirect()->route('organizations.create')->with('error', 'You must create an organization before adding users.');
         }
 
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'last_name' => 'nullable|string|max:255',
-        'phone' => 'nullable|string|max:255',
-        'email' => 'required|email|unique:users,email',
-        'role' => 'required|in:admin,office_manager,worker,client',
-        'organization_id' => 'nullable|exists:organizations,id',
-        'password' => 'required|string|min:8|confirmed',
-    ]);
+        if (!in_array($authUser->role, ['admin', 'office_manager'])) {
+            return redirect()->route('dashboard')->with('error', 'Access denied.');
+        }
+    
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'role' => 'required|in:admin,office_manager,worker,client',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+    
+        $organizationId = ($authUser->role === 'office_manager') ? $authUser->organization_id : null;
+    
+        $user = User::create([
+            'name' => $validated['name'],
+            'last_name' => $validated['last_name'] ?? null,
+            'phone' => $validated['phone'] ?? null,
+            'email' => $validated['email'],
+            'role' => $validated['role'],
+            'organization_id' => $organizationId, 
+            'password' => Hash::make($validated['password']), 
+        ]);
+    
+        return redirect()->route('users.index')->with('success', 'User added successfully!');
+    }
+    
+    public function index()
+    {
+        $authUser = Auth::user();
+    
+        if ($authUser->role === 'admin') {
+            $users = User::with('organization')->get();
+        } elseif ($authUser->role === 'office_manager' && $authUser->organization_id) {
+            $users = User::with('organization')->where('organization_id', $authUser->organization_id)->get();
+        } else {
+            $users = collect();
+        }
+    
+        return view('users.index', compact('users'));
+    }
+    
 
-    \Log::info('User validation passed', $validated);
 
-    $user = User::create([
-        'name' => $validated['name'],
-        'last_name' => $validated['last_name'] ?? null,
-        'phone' => $validated['phone'] ?? null,
-        'email' => $validated['email'],
-        'role' => $validated['role'],
-        'organization_id' => $validated['organization_id'] ?? null,
-        'password' => Hash::make($validated['password']), 
-    ]);
-
-    \Log::info('User created', ['user' => $user]);
-
-    return redirect()->route('dashboard')->with('success', 'User added successfully!');
-}
 
 }
