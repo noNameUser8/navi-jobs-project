@@ -24,6 +24,7 @@
                     <th class="border border-gray-300 p-2">Role</th>
                     <th class="border border-gray-300 p-2">Phone</th>
                     <th class="border border-gray-300 p-2">Organization</th>
+                    <th class="border border-gray-300 p-2">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,6 +35,16 @@
                         <td class="border border-gray-300 p-2">{{ ucfirst($user->role) }}</td>
                         <td class="border border-gray-300 p-2">{{ $user->phone ?? 'N/A' }}</td>
                         <td class="border border-gray-300 p-2">{{ optional($user->organization)->name ?? 'N/A' }}</td>
+                        <td class="border border-gray-300 p-2">
+                            @if(auth()->user()->role === 'admin' || auth()->user()->organization_id === $user->organization_id)
+                                <a href="{{ route('users.edit', $user->id) }}" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</a>
+                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline-block">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+                                </form>
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

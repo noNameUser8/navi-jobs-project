@@ -16,9 +16,4 @@ class Organization extends Model
         'city',
         'address',
     ];
-
-    public function organization()
-    {
-        return $this->belongsTo(Organization::class, 'organization_id');
-    }
 }

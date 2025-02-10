@@ -71,4 +71,49 @@ class UserController extends Controller
 
         return view('users.index', compact('users'));
     }
+
+    public function edit(User $user)
+    {
+        $authUser = Auth::user();
+
+        if ($authUser->role !== 'admin' && $authUser->organization_id !== $user->organization_id) {
+            return redirect()->route('users.index')->with('error', 'Access denied.');
+        }
+
+        return view('users.edit', compact('user'));
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $authUser = Auth::user();
+
+        if ($authUser->role !== 'admin' && $authUser->organization_id !== $user->organization_id) {
+            return redirect()->route('users.index')->with('error', 'Access denied.');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'role' => 'required|in:worker',
+        ]);
+
+        $user->update($validated);
+
+        return redirect()->route('users.index')->with('success', 'User updated successfully!');
+    }
+
+    public function destroy(User $user)
+    {
+        $authUser = Auth::user();
+
+        if ($authUser->role !== 'admin' && $authUser->organization_id !== $user->organization_id) {
+            return redirect()->route('users.index')->with('error', 'Access denied.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('users.index')->with('success', 'User deleted successfully!');
+    }
 }
